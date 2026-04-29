@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dbun771vcibv2"]
+
+[ext_resource type="Script" uid="uid://b1r5mfve33ggy" path="res://systems/skills/sword_orbit/sword.gd" id="1_n25eb"]
+[ext_resource type="Texture2D" uid="uid://61b0hkmgm4s1" path="res://systems/skills/sword_orbit/sword.png" id="1_rl4ki"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n25eb"]
+size = Vector2(28.638308, 67.8649)
+
+[node name="Sword" type="Area2D" unique_id=2095256883]
+script = ExtResource("1_n25eb")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=461944331]
+position = Vector2(-0.9999999, -6.0000005)
+rotation = -3.9181247
+scale = Vector2(0.061826725, 0.05986874)
+texture = ExtResource("1_rl4ki")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1169553954]
+position = Vector2(2.1558504, 16.47393)
+rotation = 3.117524
+scale = Vector2(0.6937766, -1.7005616)
+shape = SubResource("RectangleShape2D_n25eb")
+debug_color = Color(0.95425063, 0.05539397, 0.5219628, 0.41960785)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

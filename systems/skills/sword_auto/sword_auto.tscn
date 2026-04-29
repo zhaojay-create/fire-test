@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dqh43cis7xv7p"]
+
+[ext_resource type="Script" uid="uid://djouj47jkg8gs" path="res://systems/skills/sword_auto/sword_auto.gd" id="1_25d2q"]
+[ext_resource type="PackedScene" uid="uid://dbun771vcibv2" path="res://systems/skills/sword_orbit/sword.tscn" id="1_nvfvv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_csdhd"]
+
+[node name="SwordAuto" type="Area2D" unique_id=1911407444]
+script = ExtResource("1_25d2q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=888616983]
+scale = Vector2(30, 30)
+shape = SubResource("CircleShape2D_csdhd")
+debug_color = Color(0.9585534, 0.013950313, 0.52166873, 0.41960785)
+
+[node name="Sword" parent="." unique_id=2095256883 instance=ExtResource("1_nvfvv")]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

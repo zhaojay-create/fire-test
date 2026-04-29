@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://sfgbtk7w700n"]
+
+[ext_resource type="Texture2D" uid="uid://c0p44t0h3c1wu" path="res://entities/enemies/monster/monster.png" id="1_1iqh6"]
+[ext_resource type="Script" uid="uid://dbbmpjs833m8u" path="res://entities/enemies/monster/monster.gd" id="1_qder4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qder4"]
+radius = 74.10803
+
+[node name="Monster" type="CharacterBody2D" unique_id=502459249]
+script = ExtResource("1_qder4")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1033262452]
+scale = Vector2(0.375, 0.37500003)
+texture = ExtResource("1_1iqh6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1426351814]
+shape = SubResource("CircleShape2D_qder4")
+debug_color = Color(0.9493205, 0.06145343, 0.5442144, 0.41960785)

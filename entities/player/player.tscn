@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dqr3qv55r4bdx"]
+
+[ext_resource type="Script" uid="uid://dohixn5g6tr4s" path="res://entities/player/player.gd" id="1_abrql"]
+[ext_resource type="Texture2D" uid="uid://bktycs2o12bik" path="res://entities/player/icon.svg" id="1_symyc"]
+[ext_resource type="PackedScene" uid="uid://dqh43cis7xv7p" path="res://systems/skills/sword_auto/sword_auto.tscn" id="3_bls4j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_abrql"]
+size = Vector2(124.75, 122)
+
+[node name="Player" type="CharacterBody2D" unique_id=10788962]
+motion_mode = 1
+script = ExtResource("1_abrql")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=843876201]
+texture = ExtResource("1_symyc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=885700835]
+position = Vector2(-0.375, 0)
+shape = SubResource("RectangleShape2D_abrql")
+debug_color = Color(0.96903485, 0.0047429968, 0.46412897, 0.41960785)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1755614315]
+
+[node name="SwordAuto" parent="." unique_id=1911407444 instance=ExtResource("3_bls4j")]

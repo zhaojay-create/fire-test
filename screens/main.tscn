@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://jio5xopx1bdc"]
+
+[ext_resource type="Texture2D" uid="uid://cbppg1jm8hwf2" path="res://screens/background.jpg" id="1_wtj3h"]
+[ext_resource type="PackedScene" uid="uid://dqr3qv55r4bdx" path="res://entities/player/player.tscn" id="2_0vcwn"]
+[ext_resource type="PackedScene" uid="uid://sfgbtk7w700n" path="res://entities/enemies/monster/monster.tscn" id="3_6flog"]
+
+[node name="Main" type="Node2D" unique_id=1446928119]
+
+[node name="background" type="Sprite2D" parent="." unique_id=1237286775]
+scale = Vector2(3, 2.221)
+texture = ExtResource("1_wtj3h")
+
+[node name="Player" parent="." unique_id=10788962 instance=ExtResource("2_0vcwn")]
+
+[node name="Monster" parent="." unique_id=502459249 instance=ExtResource("3_6flog")]
+position = Vector2(-336, -218)
