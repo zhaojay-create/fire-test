@@ -5,20 +5,27 @@
 [ext_resource type="PackedScene" uid="uid://dqh43cis7xv7p" path="res://systems/skills/sword_auto/sword_auto.tscn" id="3_bls4j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_abrql"]
-size = Vector2(124.75, 122)
+size = Vector2(58.75, 256)
 
 [node name="Player" type="CharacterBody2D" unique_id=10788962]
 motion_mode = 1
 script = ExtResource("1_abrql")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=843876201]
+scale = Vector2(0.461104, 2.0291977)
 texture = ExtResource("1_symyc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=885700835]
-position = Vector2(-0.375, 0)
+position = Vector2(-1, 1)
 shape = SubResource("RectangleShape2D_abrql")
 debug_color = Color(0.96903485, 0.0047429968, 0.46412897, 0.41960785)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1755614315]
+limit_left = -1280
+limit_top = -950
+limit_right = 1280
+limit_bottom = 950
 
 [node name="SwordAuto" parent="." unique_id=1911407444 instance=ExtResource("3_bls4j")]
+position = Vector2(-13, -1)
+scale = Vector2(1.4626415, 1.0076648)

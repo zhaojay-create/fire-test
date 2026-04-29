@@ -7,6 +7,7 @@
 size = Vector2(28.638308, 67.8649)
 
 [node name="Sword" type="Area2D" unique_id=2095256883]
+rotation = -3.1267695
 script = ExtResource("1_n25eb")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=461944331]

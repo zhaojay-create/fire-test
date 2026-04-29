@@ -26,6 +26,7 @@ func _physics_process(_delta: float) -> void:
 
 func take_damage():
 	health -= 1
+	print('被攻击了', health)
 	
 	if(health == 0):
 		queue_free()
