@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dbun771vcibv2" path="res://systems/skills/sword_orbit/sword.tscn" id="1_nvfvv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_csdhd"]
+radius = 18.988008
 
 [node name="SwordAuto" type="Area2D" unique_id=1911407444]
 script = ExtResource("1_25d2q")

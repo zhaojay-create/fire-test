@@ -44,7 +44,8 @@ func _process(delta: float) -> void:
 					has_hit = true
 					target.take_damage()
 				state = State.RETURNING
-			global_position += dir * FLY_SPEED * delta
+			else:
+				global_position += dir * FLY_SPEED * delta
  
 		State.RETURNING:
 			var dir = global_position.direction_to(player.global_position)
@@ -59,10 +60,11 @@ func _on_body_entered(body: Node2D) -> void:
 	if has_hit:
 		return
 	print("有敌人进入飞行的范围, 开始攻击")
-	if body.has_method("take_damage"):
+	if state == State.FLY_OUT and body == target:
 		has_hit = true
-		body.take_damage()
-		state = State.RETURNING  # 攻击到敌人后返回
+		if body.has_method("take_damage"):
+			body.take_damage()
+		state = State.RETURNING
 	
 func _find_and_fly() -> void:
 	has_hit = false
