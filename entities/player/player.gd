@@ -4,6 +4,7 @@ signal health_changed(current_hp: int, max_hp: int)
 signal xp_changed(xp: int, xp_needed: int)
 signal realm_changed(realm_index: int, realm_name: String)
 signal lifespan_changed(months: int)
+signal spirit_sense_changed(current: int, max_val: int)
 signal died
 
 const SPEED = 600.0
@@ -18,7 +19,10 @@ var current_hp: int
 var total_xp: int = 0       # 累计灵气
 var realm_index: int = 0    # 当前境界（0=炼气）
 var lifespan_months: int = 1200  # 寿元（月），初始 100 年
+var max_spirit_sense: int = 100  # 神识上限
+var used_spirit_sense: int = 0   # 已占用神识
 var _invincible: bool = false # 是否处于无敌状态
+var _spirit_overdraft_acc: float = 0.0 # 神识透支寿元累计器
 
 var _invincibility_timer: Timer # 无敌计时器
 var _flash_tween: Tween # 闪烁动画
@@ -41,6 +45,7 @@ func _physics_process(_delta: float) -> void:
 	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * SPEED
 	move_and_slide()
+	_process_spirit_overdraft(_delta)
 
 
 func take_damage(amount: int = 1) -> void:
@@ -57,6 +62,43 @@ func take_damage(amount: int = 1) -> void:
 	_invincible = true
 	_invincibility_timer.start()
 	_start_flash()
+
+
+## 获取当前剩余神识（可为负值）
+func get_spirit_sense() -> int:
+	return max_spirit_sense - used_spirit_sense
+
+
+## 占用神识
+func occupy_spirit_sense(amount: int) -> void:
+	used_spirit_sense += amount
+	spirit_sense_changed.emit(get_spirit_sense(), max_spirit_sense)
+
+
+## 释放神识
+func release_spirit_sense(amount: int) -> void:
+	used_spirit_sense = maxi(used_spirit_sense - amount, 0)
+	spirit_sense_changed.emit(get_spirit_sense(), max_spirit_sense)
+
+
+## 神识透支 → 每秒按比例扣寿元
+func _process_spirit_overdraft(delta: float) -> void:
+	var current = get_spirit_sense()
+	if current >= 0:
+		_spirit_overdraft_acc = 0.0
+		return
+	# 透支比例：|负值| / 上限，例如 -50/100 = 0.5
+	var ratio = absf(float(current)) / float(max_spirit_sense)
+	# 每秒扣 months = ratio * 12（即每秒最多扣 1 年，ratio=1 时）
+	var drain_per_sec = ratio * 12.0
+	_spirit_overdraft_acc += drain_per_sec * delta
+	if _spirit_overdraft_acc >= 1.0:
+		var months_to_drain = int(_spirit_overdraft_acc)
+		_spirit_overdraft_acc -= float(months_to_drain)
+		lifespan_months -= months_to_drain
+		lifespan_changed.emit(lifespan_months)
+		if lifespan_months <= 0:
+			_die()
 
 
 func add_xp(amount: int) -> void:
