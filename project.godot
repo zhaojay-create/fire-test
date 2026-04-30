@@ -17,6 +17,7 @@ config/icon="res://entities/player/icon.svg"
 
 [autoload]
 
+PlayerManager="*res://autoload/player_manager.gd"
 SkillManager="*res://autoload/skill_manager.gd"
 
 [display]

@@ -23,9 +23,7 @@ func _process(delta: float) -> void:
 			return
 
 	if not _attracted:
-		var radius = ATTRACT_RADIUS
-		if "pickup_range_mult" in _player:
-			radius *= _player.pickup_range_mult
+		var radius = ATTRACT_RADIUS * PlayerManager.pickup_range_mult
 		var dist = global_position.distance_to(_player.global_position)
 		if dist < radius:
 			_attracted = true

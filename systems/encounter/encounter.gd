@@ -60,16 +60,13 @@ func _show_skill_panel() -> void:
 func _on_skill_chosen(skill_id: String) -> void:
 	# skill_panel 已经调用了 apply_skill / apply_passive
 	# 这里只负责扣寿元和恢复游戏
-	var player = get_tree().get_first_node_in_group("player")
-	if player:
-		# 从两个池中查找定义
-		var def = SkillManager._get_def(skill_id)
-		if def.is_empty():
-			def = SkillManager._get_passive_def(skill_id)
-		if not def.is_empty():
-			var cost = def.get("lifespan_cost", 0) as int
-			if cost > 0:
-				player.spend_lifespan(cost)
+	var def = SkillManager._get_def(skill_id)
+	if def.is_empty():
+		def = SkillManager._get_passive_def(skill_id)
+	if not def.is_empty():
+		var cost = def.get("lifespan_cost", 0) as int
+		if cost > 0:
+			PlayerManager.spend_lifespan(cost)
 
 	get_tree().paused = false
 	queue_free()

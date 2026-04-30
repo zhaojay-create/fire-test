@@ -140,17 +140,18 @@ func apply_skill(skill_id: String) -> void:
 	var new_level = level + 1
 	owned_skills[skill_id] = new_level
 
-	var player = get_tree().get_first_node_in_group("player")
-	if not player:
-		return
-
 	# 占用新增等级的神识
 	var def = _get_def(skill_id)
 	if def.is_empty():
 		return
 	var cost = def.get("spirit_sense_cost", 0) as int
-	player.occupy_spirit_sense(cost)
+	PlayerManager.occupy_spirit_sense(cost)
 	skill_enabled[skill_id] = true
+
+	# 技能场景节点仍需挂到 player 实体上
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		return
 
 	if level == 0:
 		# 新技能 → 实例化场景挂到玩家身上
@@ -176,10 +177,6 @@ func toggle_skill(skill_id: String) -> void:
 	if level == 0:
 		return # 未拥有
 
-	var player = get_tree().get_first_node_in_group("player")
-	if not player:
-		return
-
 	var def = _get_def(skill_id)
 	if def.is_empty():
 		return
@@ -190,14 +187,17 @@ func toggle_skill(skill_id: String) -> void:
 
 	if enabled:
 		# 关闭技能 → 释放神识
-		player.release_spirit_sense(total_cost)
+		PlayerManager.release_spirit_sense(total_cost)
 		skill_enabled[skill_id] = false
-		_set_skill_active(player, skill_id, false)
 	else:
 		# 开启技能 → 占用神识（允许透支）
-		player.occupy_spirit_sense(total_cost)
+		PlayerManager.occupy_spirit_sense(total_cost)
 		skill_enabled[skill_id] = true
-		_set_skill_active(player, skill_id, true)
+
+	# 显示/隐藏技能节点
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		_set_skill_active(player, skill_id, skill_enabled[skill_id])
 
 	skill_toggled.emit(skill_id, skill_enabled[skill_id])
 
@@ -224,25 +224,21 @@ func apply_passive(passive_id: String) -> void:
 	var level = owned_skills.get(passive_id, 0)
 	owned_skills[passive_id] = level + 1
 
-	var player = get_tree().get_first_node_in_group("player")
-	if not player:
-		return
-
 	match passive_id:
 		"spirit_expand":
-			player.max_spirit_sense += 20
-			player.spirit_sense_changed.emit(player.get_spirit_sense(), player.max_spirit_sense)
+			PlayerManager.max_spirit_sense += 20
+			PlayerManager.spirit_sense_changed.emit(PlayerManager.get_spirit_sense(), PlayerManager.max_spirit_sense)
 		"pickup_range":
-			player.pickup_range_mult += 0.5
+			PlayerManager.pickup_range_mult += 0.5
 		"max_hp_up":
-			player.max_hp += 2
-			player.current_hp = mini(player.current_hp + 2, player.max_hp)
-			player.health_changed.emit(player.current_hp, player.max_hp)
+			PlayerManager.max_hp += 2
+			PlayerManager.current_hp = mini(PlayerManager.current_hp + 2, PlayerManager.max_hp)
+			PlayerManager.health_changed.emit(PlayerManager.current_hp, PlayerManager.max_hp)
 		"lifespan_restore":
-			player.lifespan_months += 120 # +10年
-			player.lifespan_changed.emit(player.lifespan_months)
+			PlayerManager.lifespan_months += 120 # +10年
+			PlayerManager.lifespan_changed.emit(PlayerManager.lifespan_months)
 		"xp_boost":
-			player.xp_mult += 0.3
+			PlayerManager.xp_mult += 0.3
 
 	skill_selected.emit(passive_id)
 

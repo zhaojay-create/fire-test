@@ -29,15 +29,13 @@ func _build_buttons() -> void:
 	for child in _btn_container.get_children():
 		child.queue_free()
 
-	var player = get_tree().get_first_node_in_group("player")
-
 	for pick in _picks:
 		var cost = pick["lifespan_cost"] as int
 		var is_passive = pick.get("is_passive", false) as bool
 		var btn = Button.new()
 
 		if cost > 0:
-			var cost_text = player.format_lifespan(cost) if player else "%d月" % cost
+			var cost_text = PlayerManager.format_lifespan(cost)
 			btn.text = "%s（寿元 -%s）" % [pick["label"], cost_text]
 		else:
 			btn.text = pick["label"]
@@ -46,7 +44,7 @@ func _build_buttons() -> void:
 		btn.custom_minimum_size = Vector2(400, 60)
 		btn.add_theme_font_size_override("font_size", 22)
 		# 寿元不足时禁用按钮
-		if player and cost > 0 and player.lifespan_months < cost:
+		if cost > 0 and PlayerManager.lifespan_months < cost:
 			btn.disabled = true
 			btn.tooltip_text = "寿元不足"
 		var sid = pick["id"] as String

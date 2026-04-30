@@ -13,23 +13,21 @@ var kill_count: int = 0
 
 
 func _ready() -> void:
-	var player = get_tree().get_first_node_in_group("player")
-	
-	if player:
-		health_bar.max_value = player.max_hp
-		health_bar.value = player.current_hp
-		player.health_changed.connect(_on_player_health_changed)
-		player.xp_changed.connect(_on_player_xp_changed)
-		player.realm_changed.connect(_on_player_realm_changed)
-		player.lifespan_changed.connect(_on_player_lifespan_changed)
-		player.spirit_sense_changed.connect(_on_spirit_sense_changed)
-		# 初始化境界 UI
-		realm_label.text = "【%s】" % player.REALM_NAMES[player.realm_index]
-		_update_lifespan(player.lifespan_months)
-		xp_bar.max_value = player.get_realm_xp_needed()
-		xp_bar.value = player.get_realm_xp()
-		# 初始化神识 UI
-		_update_spirit_sense(player.get_spirit_sense(), player.max_spirit_sense)
+	# 连接 PlayerManager 信号（不再依赖 player 节点）
+	PlayerManager.health_changed.connect(_on_player_health_changed)
+	PlayerManager.xp_changed.connect(_on_player_xp_changed)
+	PlayerManager.realm_changed.connect(_on_player_realm_changed)
+	PlayerManager.lifespan_changed.connect(_on_player_lifespan_changed)
+	PlayerManager.spirit_sense_changed.connect(_on_spirit_sense_changed)
+
+	# 初始化 UI
+	health_bar.max_value = PlayerManager.max_hp
+	health_bar.value = PlayerManager.current_hp
+	realm_label.text = "【%s】" % PlayerManager.REALM_NAMES[PlayerManager.realm_index]
+	_update_lifespan(PlayerManager.lifespan_months)
+	xp_bar.max_value = PlayerManager.get_realm_xp_needed()
+	xp_bar.value = PlayerManager.get_realm_xp()
+	_update_spirit_sense(PlayerManager.get_spirit_sense(), PlayerManager.max_spirit_sense)
 
 	get_tree().node_removed.connect(_on_node_removed)
 	_update_kill_label()
