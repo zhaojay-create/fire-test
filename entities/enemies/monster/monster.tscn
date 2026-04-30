@@ -7,6 +7,8 @@
 radius = 74.10803
 
 [node name="Monster" type="CharacterBody2D" unique_id=502459249]
+collision_layer = 2
+collision_mask = 19
 script = ExtResource("1_qder4")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1033262452]

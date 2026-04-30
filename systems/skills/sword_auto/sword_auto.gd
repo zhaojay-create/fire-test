@@ -1,12 +1,13 @@
 extends Area2D
 
-const WAIT_TIME = 1.0 # 等待时间
+const WAIT_TIME = 1.0 # 每把剑攻击后的冷却时间
+const STAGGER_TIME = 0.3 # 初始交错间隔
 const HOVER_OFFSET_X = 40.0 # 左右悬浮偏移
 
 var player: Node2D = null
-var wait_timer: float = 0.0
-var bodies_in_range: Array[Node2D] = []
+var enemies_in_range: Array[Node2D] = []
 var swords: Array[Node2D] = []
+var sword_timers: Array[float] = []
 
 
 func _ready() -> void:
@@ -17,6 +18,7 @@ func _ready() -> void:
 		swords[i].top_level = true
 		swords[i].set_player(player)
 		swords[i].set_hover_offset(offsets[i])
+		sword_timers.append(i * STAGGER_TIME)
 
 
 func _process(delta: float) -> void:
@@ -29,40 +31,39 @@ func _process(delta: float) -> void:
 
 	global_position = player.global_position
 
-	wait_timer -= delta
-	if wait_timer <= 0.0:
-		_find_and_fly()
+	for i in swords.size():
+		if not swords[i].is_idle():
+			continue
+		sword_timers[i] -= delta
+		if sword_timers[i] <= 0.0:
+			_try_launch(i)
 
 
 func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("enemy"):
 		return
-	bodies_in_range.append(body)
+	enemies_in_range.append(body)
 
 
 func _on_body_exited(body: Node2D) -> void:
-	bodies_in_range.erase(body)
+	enemies_in_range.erase(body)
 
 
-func _find_and_fly() -> void:
-	var any_flying = swords.any(func(s): return s.is_flying())
-	if any_flying:
-		return
-
+func _try_launch(index: int) -> void:
 	var target = _get_closest_enemy()
 	if not is_instance_valid(target):
-		wait_timer = WAIT_TIME
+		sword_timers[index] = WAIT_TIME
 		return
 
-	for sword in swords:
-		sword.launch(target)
-	wait_timer = WAIT_TIME
+	var target_list: Array[Node2D] = [target]
+	swords[index].launch(target_list)
+	sword_timers[index] = WAIT_TIME
 
 
 func _get_closest_enemy() -> Node2D:
 	var closest: Node2D = null
 	var min_dist = INF
-	for body in bodies_in_range:
+	for body in enemies_in_range:
 		if not is_instance_valid(body):
 			continue
 		var dist = player.global_position.distance_to(body.global_position)

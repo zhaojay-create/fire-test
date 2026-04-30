@@ -27,9 +27,10 @@ position = Vector2(-202, 58)
 position = Vector2(-19, -379)
 
 [node name="WallLeft" type="StaticBody2D" parent="." unique_id=1807435577]
-visible = false
 position = Vector2(-707, -348.99997)
 scale = Vector2(0.9698012, 6.173042)
+collision_layer = 16
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft" unique_id=2005542201]
 position = Vector2(-683.646, 50.639275)
@@ -38,30 +39,32 @@ shape = SubResource("RectangleShape2D_6flog")
 debug_color = Color(0.99999994, 0.076635934, 0.7359487, 0.41960785)
 
 [node name="WallRight" type="StaticBody2D" parent="." unique_id=401135224]
-visible = false
 position = Vector2(-707, -348.99997)
 scale = Vector2(0.9698012, 6.173042)
+collision_layer = 0
+collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight" unique_id=958585718]
-visible = false
 position = Vector2(2141.676, 50.704338)
 scale = Vector2(19.999998, 20)
 shape = SubResource("RectangleShape2D_6flog")
 debug_color = Color(0.99999994, 0.076635934, 0.7359487, 0.41960785)
 
 [node name="WallUp" type="StaticBody2D" parent="." unique_id=313416736]
-visible = false
 position = Vector2(-3.0000305, -999.0001)
 scale = Vector2(180.3235, 5.235263)
+collision_layer = 16
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallUp" unique_id=1547231482]
 shape = SubResource("RectangleShape2D_6b72x")
 debug_color = Color(0.5472369, 0.40515298, 0.9973071, 0.41960785)
 
 [node name="WallDown" type="StaticBody2D" parent="." unique_id=856467627]
-visible = false
 position = Vector2(-4.7683716e-07, 997.9999)
 scale = Vector2(180.3235, 5.235263)
+collision_layer = 16
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallDown" unique_id=1851389412]
 position = Vector2(0.033273533, 0.5730604)
