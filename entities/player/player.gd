@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 signal health_changed(current_hp: int, max_hp: int)
+signal xp_gained(current_xp: int)
 signal died
 
 const SPEED = 600.0
@@ -9,6 +10,7 @@ const INVINCIBILITY_DURATION = 0.5 # 无敌帧
 @export var max_hp: int = 10
 
 var current_hp: int
+var current_xp: int = 0
 var _invincible: bool = false # 是否处于无敌状态
 
 var _invincibility_timer: Timer # 无敌计时器
@@ -40,7 +42,6 @@ func take_damage(amount: int = 1) -> void:
 
 	current_hp = maxi(current_hp - amount, 0)
 	health_changed.emit(current_hp, max_hp)
-	print("player 受到了伤害 current_hp:", current_hp, "max_hp:", max_hp)
 
 	if current_hp <= 0:
 		_die()
@@ -49,6 +50,11 @@ func take_damage(amount: int = 1) -> void:
 	_invincible = true
 	_invincibility_timer.start()
 	_start_flash()
+
+
+func add_xp(amount: int) -> void:
+	current_xp += amount
+	xp_gained.emit(current_xp)
 
 
 func _die() -> void:

@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" uid="uid://dohixn5g6tr4s" path="res://entities/player/player.gd" id="1_abrql"]
 [ext_resource type="Texture2D" uid="uid://bktycs2o12bik" path="res://entities/player/icon.svg" id="1_symyc"]
-[ext_resource type="PackedScene" uid="uid://dqh43cis7xv7p" path="res://systems/skills/sword_auto/sword_auto.tscn" id="3_bls4j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_abrql"]
 size = Vector2(58.75, 256)
 
 [node name="Player" type="CharacterBody2D" unique_id=10788962]
+z_index = 10
+scale = Vector2(1, 0.9956045)
 collision_mask = 18
 motion_mode = 1
 script = ExtResource("1_abrql")
@@ -26,7 +27,3 @@ limit_left = -1280
 limit_top = -950
 limit_right = 1280
 limit_bottom = 950
-
-[node name="SwordAuto" parent="." unique_id=1911407444 instance=ExtResource("3_bls4j")]
-position = Vector2(-13, -1)
-scale = Vector2(1.4626415, 1.0076648)

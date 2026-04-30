@@ -3,6 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://cbppg1jm8hwf2" path="res://screens/background.jpg" id="1_wtj3h"]
 [ext_resource type="PackedScene" uid="uid://dqr3qv55r4bdx" path="res://entities/player/player.tscn" id="2_0vcwn"]
 [ext_resource type="PackedScene" uid="uid://sfgbtk7w700n" path="res://entities/enemies/monster/monster.tscn" id="3_6flog"]
+[ext_resource type="PackedScene" uid="uid://mnp1c041ts6b" path="res://ui/HUD/hud.tscn" id="4_6b72x"]
+[ext_resource type="PackedScene" path="res://systems/encounter/encounter.tscn" id="5_enc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6flog"]
 size = Vector2(8.76461, 17.663929)
@@ -12,6 +14,7 @@ size = Vector2(8.76461, 17.663929)
 [node name="Main" type="Node2D" unique_id=1446928119]
 
 [node name="background" type="Sprite2D" parent="." unique_id=1237286775]
+z_index = -10
 scale = Vector2(5, 3.701)
 texture = ExtResource("1_wtj3h")
 
@@ -70,3 +73,14 @@ collision_mask = 0
 position = Vector2(0.033273533, 0.5730604)
 shape = SubResource("RectangleShape2D_6b72x")
 debug_color = Color(0.5472369, 0.40515298, 0.9973071, 0.41960785)
+
+[node name="Hud" parent="." unique_id=1584990999 instance=ExtResource("4_6b72x")]
+
+[node name="Encounter1" parent="." instance=ExtResource("5_enc")]
+position = Vector2(400, -300)
+
+[node name="Encounter2" parent="." instance=ExtResource("5_enc")]
+position = Vector2(-500, 200)
+
+[node name="Encounter3" parent="." instance=ExtResource("5_enc")]
+position = Vector2(200, 400)

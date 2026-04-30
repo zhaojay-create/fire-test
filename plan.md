@@ -15,6 +15,7 @@
 |     5 | Environment   | 环境地形障碍（墙壁、岩石等）   |
 |     6 | Pickup        | 掉落物（经验球、金币等）       |
 |     7 | AreaEffect    | 领域效果（冰狱领域等）         |
+|     8 | Encounter     | 奇遇触发区域                   |
 
 ---
 
@@ -91,15 +92,16 @@
 
 下表用 `✓` 标记 **"A 能检测到 B"**（即 A 的 mask 包含 B 的 layer）：
 
-| A ＼ B 的 Layer → | 1 Player | 2 Monster | 3 PlayerAtk | 4 MonsterAtk | 5 Env | 6 Pickup | 7 AreaEffect |
-| ----------------- | :------: | :-------: | :---------: | :----------: | :---: | :------: | :----------: |
-| **1 Player**      |          |     ✓     |             |              |   ✓   |          |              |
-| **2 Monster**     |    ✓     |     ✓     |             |              |   ✓   |          |              |
-| **3 PlayerAtk**   |          |     ✓     |             |              |       |          |              |
-| **4 MonsterAtk**  |    ✓     |           |             |              |       |          |              |
-| **5 Environment** |          |           |             |              |       |          |              |
-| **6 Pickup**      |    ✓     |           |             |              |       |          |              |
-| **7 AreaEffect**  |    ✓     |     ✓     |             |              |       |          |              |
+| A ＼ B 的 Layer → | 1 Player | 2 Monster | 3 PlayerAtk | 4 MonsterAtk | 5 Env | 6 Pickup | 7 AreaEffect | 8 Encounter |
+| ----------------- | :------: | :-------: | :---------: | :----------: | :---: | :------: | :----------: | ----------- |
+| **1 Player**      |          |     ✓     |             |              |   ✓   |          |              |             |
+| **2 Monster**     |    ✓     |     ✓     |             |              |   ✓   |          |              |             |
+| **3 PlayerAtk**   |          |     ✓     |             |              |       |          |              |             |
+| **4 MonsterAtk**  |    ✓     |           |             |              |       |          |              |             |
+| **5 Environment** |          |           |             |              |       |          |              |             |
+| **6 Pickup**      |    ✓     |           |             |              |       |          |              |             |
+| **7 AreaEffect**  |    ✓     |     ✓     |             |              |       |          |              |             |
+| **8 Encounter**   |    ✓     |           |             |              |       |          |              |             |
 
 ---
 
@@ -117,6 +119,7 @@
 2d_physics/layer_5="Environment"
 2d_physics/layer_6="Pickup"
 2d_physics/layer_7="AreaEffect"
+2d_physics/layer_8="Encounter"
 ```
 
 ---
@@ -126,7 +129,8 @@
 - **SwordAuto**（`sword_auto.tscn`）：当前为 `Area2D`，通过 `body_entered` 检测怪物。应设为 layer 3 / mask 2。
 - **Sword**（`sword.tscn`）：同上，`Area2D` + `body_entered`，设为 layer 3 / mask 2。
 - 若后续需要子弹穿透地形 / 被地形阻挡，可为 PlayerAttack 或 MonsterAttack 额外 mask 5。
-- Layer 8–32 预留给未来扩展（如 NPC、友方召唤物、特殊触发区域等）。
+- **Encounter**（`encounter.tscn`）：`Area2D`，layer 8 / mask 1，玩家进入后触发升级面板。
+- Layer 9–32 预留给未来扩展（如 NPC、友方召唤物等）。
 
 ---
 
@@ -247,6 +251,20 @@
 
 ---
 
+# Z-Index 分层设计
+
+| z_index | 层名       | 对象                   |
+| ------: | ---------- | ---------------------- |
+|     -10 | Background | 地图背景               |
+|       0 | Ground     | 掉落物（经验球、金币） |
+|       5 | Weapon     | 玩家武器（悬浮剑等）   |
+|      10 | Entity     | 玩家、怪物             |
+|      20 | Effect     | 特效、伤害飘字（预留） |
+
+> HUD 使用 `CanvasLayer`，不受 z_index 影响。
+
+---
+
 # 开发路线图
 
 ## 当前进度
@@ -272,8 +290,8 @@
 
 ### 1.4 基础 HUD
 
-- [ ] 血条（ProgressBar / TextureProgressBar）
-- [ ] 击杀计数
+- [x] 血条（ProgressBar / TextureProgressBar）
+- [x] 击杀计数
 
 ---
 
@@ -283,15 +301,16 @@
 
 ### 2.1 经验球掉落
 
-- [ ] 怪物死亡时生成经验球场景（Area2D，layer 6 / mask 1）
-- [ ] 经验球被玩家靠近后自动吸附飞向玩家
-- [ ] 接触玩家 → 增加经验值 → `queue_free()`
+- [x] 怪物死亡时生成经验球场景（Area2D，layer 6 / mask 1）
+- [x] 经验球被玩家靠近后自动吸附飞向玩家
+- [x] 接触玩家 → 增加经验值 → `queue_free()`
 
-### 2.2 升级系统
+### 2.2 升级系统（奇遇模式）
 
-- [ ] 经验值达到阈值 → 升级
-- [ ] 升级时暂停游戏，弹出 3 选 1 技能面板
+- [ ] 地图上放置"奇遇"区域（Area2D，layer 8 / mask 1）
+- [ ] 玩家进入奇遇区域 → 暂停游戏，弹出 3 选 1 技能面板
 - [ ] 技能选项：新技能 / 已有技能强化
+- [ ] 选择完毕后恢复游戏，奇遇区域消失
 
 ### 2.3 怪物刷新器（Spawner）
 

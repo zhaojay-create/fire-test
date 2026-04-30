@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dqh43cis7xv7p"]
 
 [ext_resource type="Script" uid="uid://djouj47jkg8gs" path="res://systems/skills/sword_auto/sword_auto.gd" id="1_25d2q"]
-[ext_resource type="PackedScene" uid="uid://dbun771vcibv2" path="res://systems/skills/sword_orbit/sword.tscn" id="1_nvfvv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_csdhd"]
 radius = 18.988008
@@ -15,13 +14,5 @@ script = ExtResource("1_25d2q")
 scale = Vector2(30, 30)
 shape = SubResource("CircleShape2D_csdhd")
 debug_color = Color(0.9585534, 0.013950313, 0.52166873, 0.41960785)
-
-[node name="Sword" parent="." unique_id=2095256883 instance=ExtResource("1_nvfvv")]
-position = Vector2(-50, 3)
-rotation = -0.0047290325
-
-[node name="Sword2" parent="." unique_id=1611961232 instance=ExtResource("1_nvfvv")]
-position = Vector2(68.00001, 2)
-rotation = 0.0077807903
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://mnp1c041ts6b"]
+
+[ext_resource type="Script" uid="uid://dvvjvrjocjbtg" path="res://ui/HUD/hud.gd" id="1_sv3wa"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sv3wa"]
+bg_color = Color(0.8, 0.4, 0.3, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpbar"]
+bg_color = Color(0.2, 0.7, 1, 1)
+
+[node name="Hud" type="CanvasLayer" unique_id=1584990999]
+script = ExtResource("1_sv3wa")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=303591776]
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(1, 0.98785967)
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=717329426]
+layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer" unique_id=1652749503]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95281523, 0.94172704, 1, 1)
+theme_override_styles/fill = SubResource("StyleBoxFlat_sv3wa")
+value = 20.0
+
+[node name="KillLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=307831008]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "击杀 "
+
+[node name="XpBarContainer" type="MarginContainer" parent="." unique_id=321039988]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 560.0
+offset_top = -50.0
+offset_right = -560.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 20
+
+[node name="XpBar" type="ProgressBar" parent="XpBarContainer" unique_id=1117599216]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/fill = SubResource("StyleBoxFlat_xpbar")
+max_value = 10.0
+show_percentage = false

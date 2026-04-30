@@ -1,5 +1,6 @@
 extends Area2D
 
+const SWORD_SCENE = preload("res://systems/skills/sword_orbit/sword.tscn")
 const WAIT_TIME = 1.0 # 每把剑攻击后的冷却时间
 const STAGGER_TIME = 0.3 # 初始交错间隔
 const HOVER_OFFSET_X = 40.0 # 左右悬浮偏移
@@ -12,13 +13,50 @@ var sword_timers: Array[float] = []
 
 func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player")
-	swords = [$Sword, $Sword2]
-	var offsets = [Vector2(-HOVER_OFFSET_X, 0), Vector2(HOVER_OFFSET_X, 0)]
+	# 默认 1 把剑
+	set_sword_count(1)
+
+
+## 设置飞剑数量（1~3），由 SkillManager 在升级时调用
+func set_sword_count(count: int) -> void:
+	# 已有足够数量则跳过
+	if count <= swords.size():
+		return
+
+	if not is_instance_valid(player):
+		player = get_tree().get_first_node_in_group("player")
+
+	var offsets = _calc_offsets(count)
+
+	# 更新已有剑的偏移
 	for i in swords.size():
-		swords[i].top_level = true
-		swords[i].set_player(player)
 		swords[i].set_hover_offset(offsets[i])
+
+	# 添加新剑
+	for i in range(swords.size(), count):
+		var sword = SWORD_SCENE.instantiate()
+		add_child(sword)
+		sword.top_level = true
+		sword.z_index = 5
+		if is_instance_valid(player):
+			sword.set_player(player)
+		sword.set_hover_offset(offsets[i])
+		swords.append(sword)
 		sword_timers.append(i * STAGGER_TIME)
+
+
+func _calc_offsets(count: int) -> Array[Vector2]:
+	var offsets: Array[Vector2] = []
+	if count == 1:
+		offsets.append(Vector2.ZERO)
+	elif count == 2:
+		offsets.append(Vector2(-HOVER_OFFSET_X, 0))
+		offsets.append(Vector2(HOVER_OFFSET_X, 0))
+	else:
+		offsets.append(Vector2(-HOVER_OFFSET_X, 0))
+		offsets.append(Vector2.ZERO)
+		offsets.append(Vector2(HOVER_OFFSET_X, 0))
+	return offsets
 
 
 func _process(delta: float) -> void:
