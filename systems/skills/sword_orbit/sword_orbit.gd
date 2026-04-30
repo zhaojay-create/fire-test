@@ -27,7 +27,13 @@ func set_sword_count(count: int) -> void:
 		add_child(sword)
 		var angle = TAU / count * i
 		sword.position = Vector2(cos(angle), sin(angle)) * ORBIT_RADIUS
+		sword.body_entered.connect(_on_sword_body_entered)
 		swords.append(sword)
+
+
+func _on_sword_body_entered(body: Node2D) -> void:
+	if body.is_in_group("enemy") and body.has_method("take_damage"):
+		body.take_damage()
 
 
 func _process(delta: float) -> void:
