@@ -1,5 +1,5 @@
 extends Area2D
-
+# 遭遇、遇敌、战斗场次
 const GLOW_COLOR = Color(1, 0.85, 0.2, 0.7)
 const RADIUS = 80.0
 
@@ -52,11 +52,24 @@ func _show_skill_panel() -> void:
 	var panel = panel_scene.instantiate()
 	panel.setup(picks)
 	panel.skill_chosen.connect(_on_skill_chosen)
+	panel.skipped.connect(_on_skipped)
 	# 添加到 HUD 层（CanvasLayer），保证在最上层
 	get_tree().current_scene.add_child(panel)
 
 
 func _on_skill_chosen(skill_id: String) -> void:
+	# 先扣寿元
+	var player = get_tree().get_first_node_in_group("player")
+	var def = SkillManager._get_def(skill_id)
+	if not def.is_empty() and player:
+		var cost = def["lifespan_cost"] as int
+		player.spend_lifespan(cost)
+
 	SkillManager.apply_skill(skill_id)
+	get_tree().paused = false
+	queue_free()
+
+
+func _on_skipped() -> void:
 	get_tree().paused = false
 	queue_free()

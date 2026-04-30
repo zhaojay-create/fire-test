@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cbppg1jm8hwf2" path="res://screens/background.jpg" id="1_wtj3h"]
 [ext_resource type="PackedScene" uid="uid://dqr3qv55r4bdx" path="res://entities/player/player.tscn" id="2_0vcwn"]
-[ext_resource type="PackedScene" uid="uid://sfgbtk7w700n" path="res://entities/enemies/monster/monster.tscn" id="3_6flog"]
+[ext_resource type="PackedScene" uid="uid://cyms5tb48eipy" path="res://systems/spawner/spawner.tscn" id="3_la406"]
 [ext_resource type="PackedScene" uid="uid://mnp1c041ts6b" path="res://ui/HUD/hud.tscn" id="4_6b72x"]
 [ext_resource type="PackedScene" path="res://systems/encounter/encounter.tscn" id="5_enc"]
 
@@ -20,14 +20,7 @@ texture = ExtResource("1_wtj3h")
 
 [node name="Player" parent="." unique_id=10788962 instance=ExtResource("2_0vcwn")]
 
-[node name="Monster" parent="." unique_id=502459249 instance=ExtResource("3_6flog")]
-position = Vector2(-336, -218)
-
-[node name="Monster2" parent="." unique_id=1635153834 instance=ExtResource("3_6flog")]
-position = Vector2(-202, 58)
-
-[node name="Monster3" parent="." unique_id=393404095 instance=ExtResource("3_6flog")]
-position = Vector2(-19, -379)
+[node name="Spawner" parent="." unique_id=88563654 instance=ExtResource("3_la406")]
 
 [node name="WallLeft" type="StaticBody2D" parent="." unique_id=1807435577]
 position = Vector2(-707, -348.99997)
@@ -76,11 +69,11 @@ debug_color = Color(0.5472369, 0.40515298, 0.9973071, 0.41960785)
 
 [node name="Hud" parent="." unique_id=1584990999 instance=ExtResource("4_6b72x")]
 
-[node name="Encounter1" parent="." instance=ExtResource("5_enc")]
+[node name="Encounter1" parent="." unique_id=313764218 instance=ExtResource("5_enc")]
 position = Vector2(400, -300)
 
-[node name="Encounter2" parent="." instance=ExtResource("5_enc")]
+[node name="Encounter2" parent="." unique_id=92748013 instance=ExtResource("5_enc")]
 position = Vector2(-500, 200)
 
-[node name="Encounter3" parent="." instance=ExtResource("5_enc")]
+[node name="Encounter3" parent="." unique_id=458450629 instance=ExtResource("5_enc")]
 position = Vector2(200, 400)

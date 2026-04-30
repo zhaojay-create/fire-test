@@ -1,16 +1,23 @@
 extends CharacterBody2D
 
 signal health_changed(current_hp: int, max_hp: int)
-signal xp_gained(current_xp: int)
+signal xp_changed(xp: int, xp_needed: int)
+signal realm_changed(realm_index: int, realm_name: String)
+signal lifespan_changed(months: int)
 signal died
 
 const SPEED = 600.0
 const INVINCIBILITY_DURATION = 0.5 # 无敌帧
 
+const REALM_NAMES = ["炼气", "筑基", "结丹", "元婴", "化神"]
+const REALM_THRESHOLDS = [0, 100, 300, 700, 1500] # 每个境界的起始累计灵气
+
 @export var max_hp: int = 10
 
 var current_hp: int
-var current_xp: int = 0
+var total_xp: int = 0       # 累计灵气
+var realm_index: int = 0    # 当前境界（0=炼气）
+var lifespan_months: int = 1200  # 寿元（月），初始 100 年
 var _invincible: bool = false # 是否处于无敌状态
 
 var _invincibility_timer: Timer # 无敌计时器
@@ -53,8 +60,52 @@ func take_damage(amount: int = 1) -> void:
 
 
 func add_xp(amount: int) -> void:
-	current_xp += amount
-	xp_gained.emit(current_xp)
+	total_xp += amount
+	_check_realm_up()
+	xp_changed.emit(get_realm_xp(), get_realm_xp_needed())
+
+
+## 当前境界内已累积的灵气
+func get_realm_xp() -> int:
+	return total_xp - REALM_THRESHOLDS[realm_index]
+
+
+## 当前境界需要的总灵气
+func get_realm_xp_needed() -> int:
+	if realm_index < REALM_THRESHOLDS.size() - 1:
+		return REALM_THRESHOLDS[realm_index + 1] - REALM_THRESHOLDS[realm_index]
+	return 1 # 最高境界，避免除零
+
+
+func _check_realm_up() -> void:
+	while realm_index < REALM_NAMES.size() - 1:
+		var next_threshold = REALM_THRESHOLDS[realm_index + 1]
+		if total_xp >= next_threshold:
+			realm_index += 1
+			realm_changed.emit(realm_index, REALM_NAMES[realm_index])
+		else:
+			break
+
+
+## 花费寿元（月），返回是否足够
+func spend_lifespan(months: int) -> bool:
+	if lifespan_months < months:
+		return false
+	lifespan_months -= months
+	lifespan_changed.emit(lifespan_months)
+	if lifespan_months <= 0:
+		_die()
+	return true
+
+
+## 将月份格式化为 "年+月" 字符串
+func format_lifespan(months: int) -> String:
+	@warning_ignore("integer_division")
+	var years = months / 12
+	var m = months % 12
+	if m == 0:
+		return "%d年" % years
+	return "%d年%d月" % [years, m]
 
 
 func _die() -> void:

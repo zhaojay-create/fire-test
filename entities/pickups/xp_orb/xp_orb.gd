@@ -4,7 +4,7 @@ const ATTRACT_RADIUS = 300.0 # 吸附触发距离
 const ATTRACT_ACCEL = 600.0 # 吸附加速度
 const ATTRACT_MAX_SPEED = 500.0 # 吸附最大速度
 
-@export var xp_value: int = 1
+@export var xp_value: int = 100
 
 var _speed: float = 0.0  # 当前速度
 var _attracted: bool = false # 是否开始被吸引

@@ -10,6 +10,7 @@ var skill_defs: Array[Dictionary] = [
 		"description": "自动索敌的飞剑",
 		"scene_path": "res://systems/skills/sword_auto/sword_auto.tscn",
 		"max_level": 3,
+		"lifespan_cost": 120, # 10年 = 120月
 	},
 	{
 		"id": "sword_orbit",
@@ -17,6 +18,7 @@ var skill_defs: Array[Dictionary] = [
 		"description": "围绕玩家旋转的护体剑",
 		"scene_path": "res://systems/skills/sword_orbit/sword_orbit.tscn",
 		"max_level": 3,
+		"lifespan_cost": 60, # 5年 = 60月
 	},
 ]
 
@@ -44,6 +46,7 @@ func get_random_picks(count: int = 3) -> Array[Dictionary]:
 		var def = pool[i]
 		var level = owned_skills.get(def["id"], 0)
 		var is_new = level == 0
+		var cost = def["lifespan_cost"] as int
 		picks.append({
 			"id": def["id"],
 			"name": def["name"],
@@ -51,6 +54,7 @@ func get_random_picks(count: int = 3) -> Array[Dictionary]:
 			"scene_path": def["scene_path"],
 			"current_level": level,
 			"is_new": is_new,
+			"lifespan_cost": cost,
 			"label": ("新技能: " + def["name"]) if is_new else (def["name"] + " Lv.%d → Lv.%d" % [level, level + 1]),
 		})
 	return picks
