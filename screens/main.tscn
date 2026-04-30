@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dqr3qv55r4bdx" path="res://entities/player/player.tscn" id="2_0vcwn"]
 [ext_resource type="PackedScene" uid="uid://cyms5tb48eipy" path="res://systems/spawner/spawner.tscn" id="3_la406"]
 [ext_resource type="PackedScene" uid="uid://mnp1c041ts6b" path="res://ui/HUD/hud.tscn" id="4_6b72x"]
-[ext_resource type="PackedScene" path="res://systems/encounter/encounter.tscn" id="5_enc"]
+[ext_resource type="PackedScene" uid="uid://cp8ykw6og4k4b" path="res://systems/encounter/encounter.tscn" id="5_enc"]
 [ext_resource type="PackedScene" path="res://ui/skill_toggle/skill_toggle_panel.tscn" id="6_stg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6flog"]
@@ -70,7 +70,7 @@ debug_color = Color(0.5472369, 0.40515298, 0.9973071, 0.41960785)
 
 [node name="Hud" parent="." unique_id=1584990999 instance=ExtResource("4_6b72x")]
 
-[node name="SkillToggleLayer" parent="." instance=ExtResource("6_stg")]
+[node name="SkillToggleLayer" parent="." unique_id=724138298 instance=ExtResource("6_stg")]
 
 [node name="Encounter1" parent="." unique_id=313764218 instance=ExtResource("5_enc")]
 position = Vector2(400, -300)

@@ -33,18 +33,24 @@ func _build_buttons() -> void:
 
 	for pick in _picks:
 		var cost = pick["lifespan_cost"] as int
-		var cost_text = player.format_lifespan(cost) if player else "%d月" % cost
+		var is_passive = pick.get("is_passive", false) as bool
 		var btn = Button.new()
-		btn.text = "%s（寿元 -%s）" % [pick["label"], cost_text]
+
+		if cost > 0:
+			var cost_text = player.format_lifespan(cost) if player else "%d月" % cost
+			btn.text = "%s（寿元 -%s）" % [pick["label"], cost_text]
+		else:
+			btn.text = pick["label"]
+
 		btn.tooltip_text = pick["description"]
 		btn.custom_minimum_size = Vector2(400, 60)
 		btn.add_theme_font_size_override("font_size", 22)
 		# 寿元不足时禁用按钮
-		if player and player.lifespan_months < cost:
+		if player and cost > 0 and player.lifespan_months < cost:
 			btn.disabled = true
 			btn.tooltip_text = "寿元不足"
 		var sid = pick["id"] as String
-		btn.pressed.connect(_on_btn_pressed.bind(sid))
+		btn.pressed.connect(_on_btn_pressed.bind(sid, is_passive))
 		_btn_container.add_child(btn)
 
 	# 跳过按钮
@@ -56,7 +62,11 @@ func _build_buttons() -> void:
 	_btn_container.add_child(skip_btn)
 
 
-func _on_btn_pressed(skill_id: String) -> void:
+func _on_btn_pressed(skill_id: String, is_passive: bool = false) -> void:
+	if is_passive:
+		SkillManager.apply_passive(skill_id)
+	else:
+		SkillManager.apply_skill(skill_id)
 	skill_chosen.emit(skill_id)
 	queue_free()
 

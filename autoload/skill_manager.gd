@@ -25,6 +25,50 @@ var skill_defs: Array[Dictionary] = [
 	},
 ]
 
+# 被动增益定义表
+var passive_defs: Array[Dictionary] = [
+	{
+		"id": "spirit_expand",
+		"name": "神识扩展",
+		"description": "神识上限 +20",
+		"max_level": 5,
+		"lifespan_cost": 60, # 5年
+		"type": "passive",
+	},
+	{
+		"id": "pickup_range",
+		"name": "灵气吸附",
+		"description": "灵气拾取范围 +50%",
+		"max_level": 3,
+		"lifespan_cost": 60, # 5年
+		"type": "passive",
+	},
+	{
+		"id": "max_hp_up",
+		"name": "金身术",
+		"description": "最大生命 +2",
+		"max_level": 5,
+		"lifespan_cost": 120, # 10年
+		"type": "passive",
+	},
+	{
+		"id": "lifespan_restore",
+		"name": "固本培元",
+		"description": "恢复 10 年寿元",
+		"max_level": 99,
+		"lifespan_cost": 0,
+		"type": "passive",
+	},
+	{
+		"id": "xp_boost",
+		"name": "灵气增幅",
+		"description": "灵气获取 +30%",
+		"max_level": 3,
+		"lifespan_cost": 60, # 5年
+		"type": "passive",
+	},
+]
+
 # 玩家当前拥有的技能等级 { skill_id: int }
 var owned_skills: Dictionary = {}
 # 技能开关状态 { skill_id: bool }
@@ -35,14 +79,20 @@ func _ready() -> void:
 	pass
 
 
-## 随机抽取 count 个技能选项（新技能 或 已有技能强化）
+## 随机抽取 count 个选项（技能 + 被动混合池）
 func get_random_picks(count: int = 3) -> Array[Dictionary]:
 	var pool: Array[Dictionary] = []
 
 	for def in skill_defs:
 		var level = owned_skills.get(def["id"], 0)
 		if level >= def["max_level"]:
-			continue # 已满级，跳过
+			continue
+		pool.append(def)
+
+	for def in passive_defs:
+		var level = owned_skills.get(def["id"], 0)
+		if level >= def["max_level"]:
+			continue
 		pool.append(def)
 
 	pool.shuffle()
@@ -51,18 +101,28 @@ func get_random_picks(count: int = 3) -> Array[Dictionary]:
 		var def = pool[i]
 		var level = owned_skills.get(def["id"], 0)
 		var is_new = level == 0
-		var cost = def["lifespan_cost"] as int
+		var cost = def.get("lifespan_cost", 0) as int
+		var is_passive = def.get("type", "") == "passive"
 		var spirit_cost = def.get("spirit_sense_cost", 0) as int
+
+		var label_text: String
+		if is_passive:
+			label_text = def["name"] + ": " + def["description"]
+		elif is_new:
+			label_text = "新技能: " + def["name"] + " [神识%d]" % spirit_cost
+		else:
+			label_text = def["name"] + " Lv.%d → Lv.%d [神识+%d]" % [level, level + 1, spirit_cost]
+
 		picks.append({
 			"id": def["id"],
 			"name": def["name"],
 			"description": def["description"],
-			"scene_path": def["scene_path"],
 			"current_level": level,
 			"is_new": is_new,
+			"is_passive": is_passive,
 			"lifespan_cost": cost,
 			"spirit_sense_cost": spirit_cost,
-			"label": ("新技能: " + def["name"] + " [神识%d]" % spirit_cost) if is_new else (def["name"] + " Lv.%d → Lv.%d [神识+%d]" % [level, level + 1, spirit_cost]),
+			"label": label_text,
 		})
 	return picks
 
@@ -159,8 +219,43 @@ func _set_skill_active(player: Node, skill_id: String, active: bool) -> void:
 		skill_node.set_physics_process(active)
 
 
+## 应用被动增益
+func apply_passive(passive_id: String) -> void:
+	var level = owned_skills.get(passive_id, 0)
+	owned_skills[passive_id] = level + 1
+
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		return
+
+	match passive_id:
+		"spirit_expand":
+			player.max_spirit_sense += 20
+			player.spirit_sense_changed.emit(player.get_spirit_sense(), player.max_spirit_sense)
+		"pickup_range":
+			player.pickup_range_mult += 0.5
+		"max_hp_up":
+			player.max_hp += 2
+			player.current_hp = mini(player.current_hp + 2, player.max_hp)
+			player.health_changed.emit(player.current_hp, player.max_hp)
+		"lifespan_restore":
+			player.lifespan_months += 120 # +10年
+			player.lifespan_changed.emit(player.lifespan_months)
+		"xp_boost":
+			player.xp_mult += 0.3
+
+	skill_selected.emit(passive_id)
+
+
 func _get_def(skill_id: String) -> Dictionary:
 	for def in skill_defs:
 		if def["id"] == skill_id:
+			return def
+	return {}
+
+
+func _get_passive_def(passive_id: String) -> Dictionary:
+	for def in passive_defs:
+		if def["id"] == passive_id:
 			return def
 	return {}

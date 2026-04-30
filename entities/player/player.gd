@@ -21,6 +21,8 @@ var realm_index: int = 0    # 当前境界（0=炼气）
 var lifespan_months: int = 1200  # 寿元（月），初始 100 年
 var max_spirit_sense: int = 100  # 神识上限
 var used_spirit_sense: int = 0   # 已占用神识
+var pickup_range_mult: float = 1.0  # 灵气拾取范围倍率
+var xp_mult: float = 1.0           # 灵气获取倍率
 var _invincible: bool = false # 是否处于无敌状态
 var _spirit_overdraft_acc: float = 0.0 # 神识透支寿元累计器
 
@@ -102,7 +104,8 @@ func _process_spirit_overdraft(delta: float) -> void:
 
 
 func add_xp(amount: int) -> void:
-	total_xp += amount
+	var actual = int(amount * xp_mult)
+	total_xp += actual
 	_check_realm_up()
 	xp_changed.emit(get_realm_xp(), get_realm_xp_needed())
 
